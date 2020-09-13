@@ -106,7 +106,7 @@ if(!extension_loaded("mysql")) {
         return mysqli_fetch_assoc($result);
     }
     
-    function mysql_fetch_array($result, $type = NULL) {
+    function mysql_fetch_array($result, $type = MYSQLI_BOTH) {
         return mysqli_fetch_array($result, $type);
     }
     
@@ -301,16 +301,23 @@ if(!extension_loaded("mysql")) {
     
     function mysql_real_escape_string($string, $link = NULL) {
         $link = mysql_resolve_link($link);
-        return mysqli_real_escape_stirng($link, $string);
+        return mysqli_real_escape_string($link, $string);
     }
     
-    function mysql_result($result, $row, $field = NULL) {
-        return mysql_not_implemented("mysql_result()");
+    function mysql_result($result, $number, $field=0) {
+        mysqli_data_seek($result, $number);
+        $row = mysqli_fetch_array($result);
+        return $row[$field];
     }
    
     function mysql_stat($link = NULL) {
         $link = mysql_resolve_link($link);
         return mysqli_stat($link);
+    }
+	
+    function mysql_set_charset($charset, $link = null) {
+        $link = mysql_resolve_link($link);
+        return mysqli_query($link, "SET NAMES ".$charset.";");
     }
     
     function mysql_tablename($result, $offset) {
@@ -328,5 +335,4 @@ if(!extension_loaded("mysql")) {
         
     
 } /* End of extension_exists() test */
-    
-?>
+
